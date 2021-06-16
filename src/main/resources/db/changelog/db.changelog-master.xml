@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <changeSet id="create_tip_and_reservation_tables" author="trohovsky">
+        <createTable tableName="trip">
+            <column name="id" type="int" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false" />
+            </column>
+            <column name="from_city" type="varchar(50)">
+                <constraints nullable="false" />
+            </column>
+            <column name="to_city" type="varchar(50)">
+                <constraints nullable="false" />
+            </column>
+<!--            <column name="departure" type="timestamp">-->
+<!--                <constraints nullable="false" />-->
+<!--            </column>-->
+<!--            <column name="arrival" type="timestamp">-->
+<!--                <constraints nullable="false" />-->
+<!--            </column>-->
+            <column name="capacity" type="int">
+                <constraints nullable="false" />
+            </column>
+        </createTable>
+        <createTable tableName="reservation">
+            <column name="id" type="int" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false" />
+            </column>
+            <column name="trip_id" type="int">
+                <constraints references="trip(id)" foreignKeyName="fk_reservation_trip" nullable="false"
+                             deleteCascade="true" />
+            </column>
+            <column name="username" type="varchar(50)">
+                <constraints nullable="false" />
+            </column>
+            <column name="spots" type="int">
+                <constraints nullable="false" />
+            </column>
+        </createTable>
+    </changeSet>
+
+</databaseChangeLog>
