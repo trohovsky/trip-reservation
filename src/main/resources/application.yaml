@@ -1,0 +1,7 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/trip-reservation
+    username: reservation
+    password: reservation
+  liquibase:
+    change-log: classpath:db/changelog/db.changelog-master.xml

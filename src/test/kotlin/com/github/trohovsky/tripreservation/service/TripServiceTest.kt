@@ -14,9 +14,6 @@ import org.springframework.data.repository.findByIdOrNull
 import javax.persistence.EntityNotFoundException
 
 private const val ID = 0
-private const val FROM_CITY = "fromCity"
-private const val TO_CITY = "toCity"
-private const val CAPACITY = 1
 
 private val TRIP = Trip(
     id = ID,
@@ -52,7 +49,7 @@ internal class TripServiceTest {
     }
 
     @Test
-    fun `getById returns a trip`() {
+    fun `getById returns the trip`() {
         every { tripRepository.findByIdOrNull(ID) } returns TRIP
 
         val retrievedTrip = tripService.getById(ID)
@@ -61,14 +58,14 @@ internal class TripServiceTest {
     }
 
     @Test
-    fun `getById throws EntityNotFoundException if a trip does not exist`() {
+    fun `getById throws EntityNotFoundException if the trip does not exist`() {
         every { tripRepository.findByIdOrNull(ID) } returns null
 
         assertThrows<EntityNotFoundException> { tripService.getById(ID) }
     }
 
     @Test
-    fun `create returns a saved trip`() {
+    fun `create returns the saved trip`() {
         every { tripRepository.save(CREATE_TRIP) } returns TRIP
 
         val savedTrip = tripService.create(CREATE_TRIP_DTO)
@@ -87,7 +84,7 @@ internal class TripServiceTest {
     }
 
     @Test
-    fun `delete throws EntityNotFoundException if a trip does not exist`() {
+    fun `delete throws EntityNotFoundException if the trip does not exist`() {
         every { tripRepository.findByIdOrNull(ID) } returns null
         every { tripRepository.deleteById(ID) } returns Unit
 

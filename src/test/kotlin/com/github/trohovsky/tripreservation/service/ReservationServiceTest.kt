@@ -19,15 +19,14 @@ import javax.persistence.EntityNotFoundException
 private const val TRIP_ID = 0
 private const val TRIP_CAPACITY = 2
 private const val RESERVATION_ID = 0
-private const val  USERNAME = "username"
 private const val RESERVED_SPOTS = 1
 private const val INVALID_SPOTS = 0
 private const val RESERVED_SPOTS_IN_TOTAL = 0
 
 private val TRIP = Trip(
     id = TRIP_ID,
-    fromCity = "fromCity",
-    toCity = "toCity",
+    fromCity = FROM_CITY,
+    toCity = TO_CITY,
     capacity = TRIP_CAPACITY
 )
 private val RESERVATION = Reservation(
@@ -68,14 +67,14 @@ internal class ReservationServiceTest {
     }
 
     @Test
-    fun `getAll throws EntityNotFoundException if a trip does not exist`() {
+    fun `getAll throws EntityNotFoundException if the trip does not exist`() {
         every { tripRepository.findByIdOrNull(TRIP_ID) } returns null
 
         assertThrows<EntityNotFoundException> { reservationService.getAll(TRIP_ID) }
     }
 
     @Test
-    fun `create returns a saved reservation`() {
+    fun `create returns the saved reservation`() {
         every { tripRepository.findByIdOrNull(TRIP_ID) } returns TRIP
         every { reservationRepository.getNumberOfReservedSpots(TRIP_ID, null) } returns RESERVED_SPOTS_IN_TOTAL
         every { reservationRepository.save(CREATE_RESERVATION) } returns RESERVATION
@@ -83,6 +82,13 @@ internal class ReservationServiceTest {
         val savedReservation = reservationService.create(TRIP_ID, CREATE_RESERVATION_DTO)
 
         assertThat(savedReservation).isEqualTo(RESERVATION_DTO)
+    }
+
+    @Test
+    fun `create throws EntityNotFoundException if the trip does not exist`() {
+        every { tripRepository.findByIdOrNull(TRIP_ID) } returns null
+
+        assertThrows<EntityNotFoundException> { reservationService.create(TRIP_ID, CREATE_RESERVATION_DTO) }
     }
 
     @Test
@@ -104,7 +110,7 @@ internal class ReservationServiceTest {
 
 
     @Test
-    fun `update returns an updated reservation`() {
+    fun `update returns the updated reservation`() {
         every { tripRepository.findByIdOrNull(TRIP_ID) } returns TRIP
         every { reservationRepository.findByIdOrNull(RESERVATION_ID) } returns RESERVATION
         every { reservationRepository.getNumberOfReservedSpots(TRIP_ID, RESERVATION_ID) } returns
@@ -114,6 +120,25 @@ internal class ReservationServiceTest {
         val savedReservation = reservationService.update(TRIP_ID, RESERVATION_ID, UPDATE_RESERVATION_DTO)
 
         assertThat(savedReservation).isEqualTo(RESERVATION_DTO)
+    }
+
+    @Test
+    fun `update throws EntityNotFoundException if the trip does not exist`() {
+        every { tripRepository.findByIdOrNull(TRIP_ID) } returns null
+
+        assertThrows<EntityNotFoundException> {
+            reservationService.update(TRIP_ID, RESERVATION_ID, UPDATE_RESERVATION_DTO)
+        }
+    }
+
+    @Test
+    fun `update throws EntityNotFoundException if the reservation does not exist`() {
+        every { tripRepository.findByIdOrNull(TRIP_ID) } returns TRIP
+        every { reservationRepository.findByIdOrNull(RESERVATION_ID) } returns null
+
+        assertThrows<EntityNotFoundException> {
+            reservationService.update(TRIP_ID, RESERVATION_ID, UPDATE_RESERVATION_DTO)
+        }
     }
 
     @Test
@@ -149,8 +174,16 @@ internal class ReservationServiceTest {
     }
 
     @Test
-    fun `delete throws EntityNotFoundException if a trip does not exist`() {
+    fun `delete throws EntityNotFoundException if the trip does not exist`() {
         every { tripRepository.findByIdOrNull(TRIP_ID) } returns null
+
+        assertThrows<EntityNotFoundException> { reservationService.delete(TRIP_ID, RESERVATION_ID) }
+    }
+
+    @Test
+    fun `delete throws EntityNotFoundException if the reservation does not exist`() {
+        every { tripRepository.findByIdOrNull(TRIP_ID) } returns TRIP
+        every { tripRepository.findByIdOrNull(RESERVATION_ID) } returns null
 
         assertThrows<EntityNotFoundException> { reservationService.delete(TRIP_ID, RESERVATION_ID) }
     }
