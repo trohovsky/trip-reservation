@@ -23,7 +23,7 @@ class ReservationService(
         return reservationRepository.findByTripId(tripId).map(Reservation::toReservationDto)
     }
 
-    @Transactional(isolation = Isolation.REPEATABLE_READ)
+    @Transactional(isolation = Isolation.SERIALIZABLE)
     fun create(tripId: Int, createReservationDto: CreateReservationDto): ReservationDto {
         val trip = tripRepository.findByIdOrThrow(tripId)
         val reservation = createReservationDto.toReservation(tripId)
@@ -31,7 +31,7 @@ class ReservationService(
         return reservationRepository.save(reservation).toReservationDto()
     }
 
-    @Transactional(isolation = Isolation.REPEATABLE_READ)
+    @Transactional(isolation = Isolation.SERIALIZABLE)
     fun update(tripId: Int, reservationId: Int, updateReservationDto: UpdateReservationDto): ReservationDto {
         val trip = tripRepository.findByIdOrThrow(tripId)
         val reservationToBeUpdated = reservationRepository.findByIdOrThrow(reservationId)
